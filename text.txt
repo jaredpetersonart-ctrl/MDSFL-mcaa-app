@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MDSFL & MCAA - Dynasty Portal</title>
+    
+    <!-- PWA & Mobile Web App Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dynasty Portal">
+    <meta name="theme-color" content="#0b0e14">
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #0b0e14;
+            --bg-card: #151a23;
+            --bg-card-border: #222938;
+            --accent-blue: #38bdf8;
+            --accent-gold: #f59e0b;
+            --text-primary: #f8fafc;
+            --text-muted: #94a3b8;
+            --nav-bg: rgba(11, 14, 20, 0.95);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Mobile Viewport Container */
+        .app-shell {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background-color: #0d1117;
+            position: relative;
+            padding-bottom: 75px; /* Clear bottom nav */
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header Bar */
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .header-icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #1a202c;
+            border: 1px solid var(--bg-card-border);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .header-icon-btn:active {
+            transform: scale(0.92);
+        }
+
+        .live-audio-btn {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .live-pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* League Selector Toggle */
+        .league-toggle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .toggle-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+
+        .league-toggle {
+            display: flex;
+            background: #12161f;
+            border-radius: 20px;
+            padding: 3px;
+            border: 1px solid var(--bg-card-border);
+        }
+
+        .toggle-btn {
+            padding: 4px 14px;
+            border-radius: 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .toggle-btn.active {
+            background: #38bdf8;
+            color: #0f172a;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Sub-Header Horizontal Navigation Tabs */
+        .sub-nav {
+            display: flex;
+            overflow-x: auto;
+            background: #11151d;
+            padding: 8px 12px;
+            gap: 8px;
+            border-bottom: 1px solid var(--bg-card-border);
+            scrollbar-width: none;
+        }
+
+        .sub-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sub-tab {
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            white-space: nowrap;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid transparent;
+        }
+
+        .sub-tab.active {
+            color: #ffffff;
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        /* Main Content View */
+        .content-area {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .view-pane {
+            display: none;
+        }
+
+        .view-pane.active {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Hero Card Section */
+        .hero-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--bg-card-border);
+        }
+
+        .hero-image-wrap {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .hero-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, #0f172a 10%, transparent 80%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px;
+        }
+
+        .hero-team-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: #38bdf8;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.8rem;
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* Matchup Score Card */
+        .matchup-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--bg-card-border);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .matchup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .matchup-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+
+        .team-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 35%;
+        }
+
+        .team-logo-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #334155;
+            font-size: 1.4rem;
+            color: var(--accent-blue);
+        }
+
+        .team-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .matchup-status {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-primary);
+        }
+
+        .recap-btn {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            color: var(--accent-blue);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .recap-btn:active {
+            background: var(--accent-blue);
+            color: #0f172a;
+        }
+
+        /* Headlines Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .section-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .more-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--bg-card-border);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .headline-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--bg-card-border);
+            overflow: hidden;
+        }
+
+        .headline-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .headline-body {
+            padding: 12px;
+        }
+
+        .headline-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .headline-text {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+
+        /* Generic Content Card for sub-tab screens */
+        .generic-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--bg-card-border);
+            padding: 16px;
+        }
+
+        .generic-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--accent-blue);
+        }
+
+        .generic-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .external-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e293b;
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 12px;
+            border: 1px solid var(--bg-card-border);
+        }
+
+        /* Persistent Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            height: 65px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.68rem;
+            font-weight: 600;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+    <!-- 1. Top Navigation & Global Controls -->
+    <header class="header-top">
+        <!-- Shop Link -->
+        <a href="https://www.teepublic.com" target="_blank" class="header-icon-btn" title="Shop Official Gear">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+
+        <!-- Conference Selector Toggle -->
+        <div class="league-toggle-container">
+            <span class="toggle-label">League Standings</span>
+            <div class="league-toggle">
+                <button class="toggle-btn active" id="btn-mdsfl" onclick="switchLeague('MDSFL')">MDSFL</button>
+                <button class="toggle-btn" id="btn-mcaa" onclick="switchLeague('MCAA')">MCAA</button>
+            </div>
+        </div>
+
+        <!-- Live Audio / Streaming Button -->
+        <a href="https://www.twitch.tv" target="_blank" class="live-audio-btn">
+            <span class="live-pulse"></span>
+            LIVE AUDIO
+        </a>
+    </header>
+
+    <!-- 2. Secondary Horizontal Sub-Nav -->
+    <nav class="sub-nav">
+        <a href="#home" class="sub-tab active" onclick="switchSubTab(event, 'tab-home')">Home</a>
+        <a href="#news" class="sub-tab" onclick="switchSubTab(event, 'tab-news')">News</a>
+        <a href="#videos" class="sub-tab" onclick="switchSubTab(event, 'tab-videos')">Videos</a>
+        <a href="#photos" class="sub-tab" onclick="switchSubTab(event, 'tab-photos')">Photos</a>
+        <a href="#podcast" class="sub-tab" onclick="switchSubTab(event, 'tab-podcast')">Podcast</a>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+
+        <!-- TAB: HOME -->
+        <div id="tab-home" class="view-pane active">
+            <!-- Featured Hero Card -->
+            <div class="hero-card">
+                <div class="hero-image-wrap">
+                    <img src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=800&q=80" alt="Saint Cloud Norsemen Feature">
+                    <div class="hero-overlay">
+                        <div class="hero-team-badge">
+                            <i class="fa-solid fa-helmet-safety"></i> <span id="hero-league-tag">MCAA Dynasty</span>
+                        </div>
+                        <h1 class="hero-title" id="hero-title-text">Saint Cloud<br>Norsemen</h1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Scores Card -->
+            <div class="matchup-card">
+                <div class="matchup-header">
+                    <span id="current-week-label">Week 3 Matchup</span>
+                    <i class="fa-solid fa-football"></i>
+                </div>
+                <div class="matchup-teams">
+                    <div class="team-block">
+                        <div class="team-logo-circle" style="color: #4ade80;">
+                            <i class="fa-solid fa-shield-cat"></i>
+                        </div>
+                        <span class="team-name" id="away-team-name">Menominee</span>
+                    </div>
+
+                    <div class="matchup-status">
+                        <span class="status-badge">FINAL</span>
+                    </div>
+
+                    <div class="team-block">
+                        <div class="team-logo-circle" style="color: #38bdf8;">
+                            <i class="fa-solid fa-hat-cowboy-side"></i>
+                        </div>
+                        <span class="team-name" id="home-team-name">Saint Cloud</span>
+                    </div>
+                </div>
+                <a href="#recap" class="recap-btn" onclick="alert('Displaying Week 3 Game Recap Details')">Recap</a>
+            </div>
+
+            <!-- Headlines Feed -->
+            <div>
+                <div class="section-header">
+                    <h2 class="section-title">Headlines</h2>
+                    <a href="#news" class="more-btn" onclick="switchSubTab(null, 'tab-news')">MORE <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+
+                <div class="headline-card">
+                    <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80" class="headline-img" alt="Headline">
+                    <div class="headline-body">
+                        <span class="headline-tag" id="headline-tag-text">MCAA Press Release</span>
+                        <div class="headline-text" id="headline-title-text">Saint Cloud Norsemen Claim Pivotal Victory in Week 3 Showdown</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: NEWS / PRESS CONFERENCES -->
+        <div id="tab-news" class="view-pane">
+            <div class="generic-card">
+                <h3>Wire & Press Conferences</h3>
+                <p>Official statements, coach interviews, and weekly league wire communications.</p>
+            </div>
+        </div>
+
+        <!-- TAB: VIDEOS / HIGHLIGHT CLIPS -->
+        <div id="tab-videos" class="view-pane">
+            <div class="generic-card">
+                <h3>Highlight Clips</h3>
+                <p>Watch condensed games, top plays of the week, and user submission reels.</p>
+            </div>
+        </div>
+
+        <!-- TAB: PHOTOS -->
+        <div id="tab-photos" class="view-pane">
+            <div class="generic-card">
+                <h3>Photo Galleries</h3>
+                <p>Custom graphic showcases, uniform reveals, and game screenshot captures.</p>
+            </div>
+        </div>
+
+        <!-- TAB: PODCAST (THE DEEP DIVE) -->
+        <div id="tab-podcast" class="view-pane">
+            <div class="generic-card">
+                <h3>The Deep Dive Podcast</h3>
+                <p>Listen to weekly recaps, dynasty power rankings, and press conference breakdowns hosted by Jason & Becca.</p>
+                <a href="https://open.spotify.com" target="_blank" class="external-link-btn">
+                    <i class="fa-brands fa-spotify" style="color: #22c55e;"></i> Open in Spotify
+                </a>
+            </div>
+        </div>
+
+        <!-- TAB: TEAMS -->
+        <div id="tab-teams" class="view-pane">
+            <div class="generic-card">
+                <h3>All Teams Directory</h3>
+                <p>View program depth charts, rosters, and coach profiles for all active teams.</p>
+            </div>
+        </div>
+
+        <!-- TAB: SCHEDULE -->
+        <div id="tab-schedule" class="view-pane">
+            <div class="generic-card">
+                <h3>Team Schedules</h3>
+                <p>Master season calendar and upcoming user-vs-user matchup schedules.</p>
+            </div>
+        </div>
+
+        <!-- TAB: BETTING / PROP MARKETS -->
+        <div id="tab-betting" class="view-pane">
+            <div class="generic-card">
+                <h3>Prop Betting & Lines</h3>
+                <p>Weekly game lines, user prop markets, and dynasty championship odds.</p>
+            </div>
+        </div>
+
+        <!-- TAB: MORE / HISTORY -->
+        <div id="tab-more" class="view-pane">
+            <div class="generic-card">
+                <h3>League History & Archives</h3>
+                <p>Past season champions, award winners, rulebook records, and league settings.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 4. Persistent Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="#home" class="nav-item active" id="bnav-home" onclick="switchBottomNav(event, 'tab-home', 'bnav-home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="#teams" class="nav-item" id="bnav-teams" onclick="switchBottomNav(event, 'tab-teams', 'bnav-teams')">
+            <i class="fa-solid fa-users"></i>
+            <span>Team</span>
+        </a>
+        <a href="#schedule" class="nav-item" id="bnav-schedule" onclick="switchBottomNav(event, 'tab-schedule', 'bnav-schedule')">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Schedule</span>
+        </a>
+        <a href="#betting" class="nav-item" id="bnav-betting" onclick="switchBottomNav(event, 'tab-betting', 'bnav-betting')">
+            <i class="fa-solid fa-ticket"></i>
+            <span>Betting</span>
+        </a>
+        <a href="#more" class="nav-item" id="bnav-more" onclick="switchBottomNav(event, 'tab-more', 'bnav-more')">
+            <i class="fa-solid fa-ellipsis"></i>
+            <span>More</span>
+        </a>
+    </nav>
+
+</div>
+
+<script>
+    // Conference Switcher Functionality
+    function switchLeague(league) {
+        document.getElementById('btn-mdsfl').classList.remove('active');
+        document.getElementById('btn-mcaa').classList.remove('active');
+
+        const heroLeagueTag = document.getElementById('hero-league-tag');
+        const heroTitle = document.getElementById('hero-title-text');
+        const headlineTag = document.getElementById('headline-tag-text');
+        const homeTeam = document.getElementById('home-team-name');
+        const awayTeam = document.getElementById('away-team-name');
+
+        if (league === 'MDSFL') {
+            document.getElementById('btn-mdsfl').classList.add('active');
+            heroLeagueTag.textContent = 'MDSFL Dynasty';
+            heroTitle.innerHTML = 'Spring League<br>Showdown';
+            headlineTag.textContent = 'MDSFL Central Wire';
+            awayTeam.textContent = 'USC';
+            homeTeam.textContent = 'Penn State';
+        } else {
+            document.getElementById('btn-mcaa').classList.add('active');
+            heroLeagueTag.textContent = 'MCAA Dynasty';
+            heroTitle.innerHTML = 'Saint Cloud<br>Norsemen';
+            headlineTag.textContent = 'MCAA Press Release';
+            awayTeam.textContent = 'Menominee';
+            homeTeam.textContent = 'Saint Cloud';
+        }
+    }
+
+    // Sub-Header Navigation Tab Switching
+    function switchSubTab(event, tabId) {
+        if (event) event.preventDefault();
+
+        // Update active sub-tab styling
+        document.querySelectorAll('.sub-tab').forEach(tab => tab.classList.remove('active'));
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
+
+        // Show target pane
+        document.querySelectorAll('.view-pane').forEach(pane => pane.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // Bottom App Navigation Bar Switching
+    function switchBottomNav(event, tabId, navItemId) {
+        if (event) event.preventDefault();
+
+        // Clear top sub-tab highlighting when using bottom nav
+        document.querySelectorAll('.sub-tab').forEach(tab => tab.classList.remove('active'));
+
+        // Update bottom nav highlighting
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById(navItemId).classList.add('active');
+
+        // Show target pane
+        document.querySelectorAll('.view-pane').forEach(pane => pane.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
